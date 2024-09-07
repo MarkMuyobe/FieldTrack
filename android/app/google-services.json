@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "868184915846",
+    "firebase_url": "https://mad-ass-12a36-default-rtdb.firebaseio.com",
+    "project_id": "mad-ass-12a36",
+    "storage_bucket": "mad-ass-12a36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868184915846:android:fb8edb4c206060f0873607",
+        "android_client_info": {
+          "package_name": "com.katepo.demo.mad_demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVInuiMmObvJLwZb188-p6a-vG31sNg9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
