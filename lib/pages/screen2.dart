@@ -15,22 +15,26 @@ class Screen2 extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Go to Screen 3'),
-            ElevatedButton(
-                onPressed: ()=>{
-                  Navigator.of(context).pushNamed('Screen3')
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.three_g_mobiledata),
-                    Text('Go to pagee three')
-                  ],
-                )
-            )
-          ],
+        child: Padding(
+
+          padding: const EdgeInsets.all(44.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Go to Screen 3'),
+              ElevatedButton(
+                  onPressed: ()=>{
+                    Navigator.of(context).pushNamed('Screen3')
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.three_g_mobiledata),
+                      Text('Go to pagee three')
+                    ],
+                  )
+              )
+            ],
+          ),
         ),
       ),
     );

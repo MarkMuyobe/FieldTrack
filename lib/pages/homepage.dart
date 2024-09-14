@@ -15,11 +15,9 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
 
-  final User? user = Auth().currentUser;
+  //final User? user = Auth().currentUser;
 
-  Future<void> signOut() async {
-    await Auth().signOut();
-  }
+  // Future<void> signOut() async {    await Auth().signOut();  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +46,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 20.0,
               ),
               TextFormField(
+                obscureText: true,
                 controller: _password,
                 decoration: const InputDecoration(
+
                   labelText: 'Password',
                   prefixIcon: Icon(
                       Icons.sticky_note_2_outlined
