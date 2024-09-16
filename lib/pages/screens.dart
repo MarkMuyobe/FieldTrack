@@ -1,5 +1,5 @@
-export 'screen1.dart';
-export 'screen2.dart';
+export 'sign_up.dart';
+export 'dashboard.dart';
 export 'screen3.dart';
 export 'screen4.dart';
 export 'homepage.dart';

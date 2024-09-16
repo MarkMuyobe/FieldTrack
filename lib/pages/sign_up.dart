@@ -9,6 +9,7 @@ class Screen1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //TODO: Turn this page into the page in the Figma design
       appBar: AppBar(
         title: const Row(
           children: [

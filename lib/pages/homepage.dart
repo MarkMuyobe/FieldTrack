@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mad_demo/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
+import 'dashboard.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -12,69 +13,45 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _username = TextEditingController();
-  final TextEditingController _password = TextEditingController();
+  int _selectedIndex = 0;
 
-  //final User? user = Auth().currentUser;
-
-  // Future<void> signOut() async {    await Auth().signOut();  }
+  final List<Widget> _pages = <Widget>[
+    const Dashboard(),
+    const Center(child: Text('Notifications', style: TextStyle(fontSize: 24))),
+    const Center(child: Text('Add', style: TextStyle(fontSize: 24))),
+    const Center(child: Text('Calendar', style: TextStyle(fontSize: 24))),
+    const Center(child: Text('Settings', style: TextStyle(fontSize: 24))),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('FieldTrack',style: TextStyle(fontSize: 12),),
+        backgroundColor: Colors.green[700],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              TextFormField(
-                controller: _username,
-                decoration: const InputDecoration(
-                  labelText: 'Username',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(24.0))
-                  ),
-                ),
-                keyboardType: TextInputType.name,
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                obscureText: true,
-                controller: _password,
-                decoration: const InputDecoration(
-
-                  labelText: 'Password',
-                  prefixIcon: Icon(
-                      Icons.sticky_note_2_outlined
-                  ),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(24.0))
-                  ),
-                ),
-                keyboardType: TextInputType.visiblePassword,
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 150,
-                child: ElevatedButton(
-                  onPressed: () => {
-                    Navigator.of(context).pushNamed('Screen1')
-                  }
-                  ,
-                  child: const Text('Submit'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: _pages[_selectedIndex],
+      // Bottom Navigation Bar
+      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Colors.transparent,  // The color of the page background
+        color: Colors.black,  // The color of the curved bar
+        buttonBackgroundColor: Colors.green,  // The background color of the selected button
+        animationDuration: const Duration(milliseconds: 300),  // Animation duration
+        height: 60,  // Height of the curved bar
+        items: const <Widget>[
+          Icon(Icons.home_filled, size: 30, color: Colors.white),
+          Icon(Icons.notifications, size: 30, color: Colors.white),
+          Icon(Icons.add, size: 30, color: Colors.white),  // Icon for add Item
+          Icon(Icons.calendar_today, size: 30, color: Colors.white),  // Icon for Calendar
+          Icon(Icons.settings, size: 30, color: Colors.white),  // Icon for Settings
+        ],
+        onTap: (index) {
+          setState((){
+            _selectedIndex = index;
+          });
+        },
+      ),
     );
   }
 }
+

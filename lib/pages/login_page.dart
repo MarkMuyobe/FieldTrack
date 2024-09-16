@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../auth.dart';
+import '../services/auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -32,8 +32,8 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> createUserWithEmailAndPassword() async {
     try {
       await Auth().createUserWithEmailAndPassword(
-          email: _controllerEmail,
-          password: _controllerPassword);
+          email: _controllerEmail.text,
+          password: _controllerPassword.text);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _errorMessage(){
-    return Text(errorMessage == '' ? '' : 'Hmm? $errorMessage');
+    return Text(errorMessage == '' ? 'pooA' : 'Hmm? $errorMessage');
   }
 
   Widget _loginOrRegisterButton(){
@@ -51,14 +51,15 @@ class _LoginPageState extends State<LoginPage> {
         isLogin = !isLogin;
       });
     },
-        child: Text(isLogin? 'Register instead' : 'Login instead'));
+        child: Text(isLogin? 'Register instead' : 'Login instead')
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        title: Text('Login/Sign Up'),
+        title: Text(isLogin ? 'Login' : 'Sign Up'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 controller: _controllerEmail,
                 decoration: const InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Email',
                   prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(24.0))
@@ -99,9 +100,12 @@ class _LoginPageState extends State<LoginPage> {
                 width: 150,
                 child: ElevatedButton(
                   onPressed: () => {
-                    isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword
-                  }
-                  ,
+                    if(isLogin){
+                      signInWithEmailAndPassword()
+                    } else {
+                      createUserWithEmailAndPassword()
+                    }
+                  },
                   child: Text( isLogin ? 'Login' : 'Register'),
                 ),
               ),

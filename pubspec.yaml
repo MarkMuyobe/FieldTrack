@@ -38,6 +38,8 @@ dependencies:
   google_fonts: ^6.2.1
   firebase_core: ^3.4.0
   firebase_auth: ^5.2.0
+  fluttertoast: ^8.2.8
+  curved_navigation_bar: ^1.0.6
 
 dev_dependencies:
   flutter_test:

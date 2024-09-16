@@ -45,6 +45,7 @@ class MadTheme {
         selectedItemColor: Colors.green,
       ),
       textTheme: darkTextTheme,
+      primaryColor: Colors.green
     );
   }
 }

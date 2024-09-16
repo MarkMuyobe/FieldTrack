@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       home: const WidgetTree(),
       routes: {
         'Screen1' : (context) => Screen1(),
-        'Screen2' : (context) => const Screen2(),
+        'Screen2' : (context) => const Dashboard(),
         'Screen3' : (context) => Screen3(),
       },
     );
