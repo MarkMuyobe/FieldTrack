@@ -15,7 +15,7 @@ class Dashboard extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 10.0,
               mainAxisSpacing: 10.0,
-              children: <Widget>[
+              children: const  <Widget>[
                 SummaryCard(title: "Total Requests", value: "29"),
                 SummaryCard(title: "Pending Requests", value: "12"),
                 SummaryCard(title: "In Progress", value: "2"),
@@ -63,13 +63,20 @@ class SummaryCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
             Text(
               value,
-              style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),

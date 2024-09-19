@@ -15,7 +15,7 @@ class GreetingPage extends StatelessWidget {
             const Text(
               'FIELDTRACK',
               style: TextStyle(
-                fontFamily: 'Roboto',
+                fontFamily: 'Amuse-Bouche',
                 fontSize: 40, // Size for the logo text
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF4ECB71), // Green color for the logo
