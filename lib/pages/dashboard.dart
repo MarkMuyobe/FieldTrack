@@ -8,10 +8,14 @@ class Dashboard extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF1E1E1E), // Dark background color
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4ECB71), // Green app bar color
+        backgroundColor: const Color(0xFF3DAF5C), // Green app bar color
         title: const Text(
           'Dashboard',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.black
+          ),
         ),
         automaticallyImplyLeading: false, // Remove back button
       ),
@@ -20,7 +24,6 @@ class Dashboard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Section (Title and Switch Placeholder)
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -34,9 +37,85 @@ class Dashboard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 10), // Add a space between Summary and the buttons
+            Row(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: OutlinedButton(
+                            onPressed: () {}, // Add functionality here
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.green),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(30)),
+                              ),
+                            ),
+                            child: const Text(
+                              'All',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: OutlinedButton(
+                            onPressed: () {}, // Add functionality here
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.green),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(30)),
+                              ),
+                            ),
+                            child: const Text(
+                              'Filter',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: OutlinedButton(
+                            onPressed: () {}, // Add functionality here
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.green),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(30)),
+                              ),
+                            ),
+                            child: const Text(
+                              'Collection',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: OutlinedButton(
+                            onPressed: () {}, // Add functionality here
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.green),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(30)),
+                              ),
+                            ),
+                            child: const Text(
+                              'Sorted',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
-
-            // First Row (Total Requests and Pending Requests)
             const Row(
               children: [
                 Expanded(
@@ -57,8 +136,6 @@ class Dashboard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-
-            // Second Row (In Progress and Complete Requests)
             const Row(
               children: [
                 Expanded(
@@ -79,17 +156,16 @@ class Dashboard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-
             // Graph Section (Placeholder for now)
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4ECB71),
+                  color: const Color(0xFF3DAF5C),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(
                   child: Icon(
-                    Icons.show_chart, // Placeholder for graph
+                    Icons.show_chart,
                     size: 100,
                     color: Colors.white,
                   ),
