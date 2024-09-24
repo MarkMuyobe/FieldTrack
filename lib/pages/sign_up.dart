@@ -32,6 +32,8 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
+  //Todo add firestore
+
   Future<void> createUserWithEmailAndPassword() async {
     if (_controllerPassword.text == _controllerRepeatPassword.text) {
       try {
