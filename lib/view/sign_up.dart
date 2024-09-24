@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../services/auth.dart'; // Ensure your authentication logic is included here
+import '../controller/auth.dart'; // Ensure your authentication logic is included here
 import '../stylers/gradient_text.dart';
 import 'login_page.dart'; // Import the LoginPage
 
