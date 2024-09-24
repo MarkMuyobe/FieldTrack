@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mad_demo/pages/homepage.dart';
 
 import '../services/auth.dart';
+import 'dashboard.dart'; // Import the Dashboard page
 import 'sign_up.dart'; // Import the SignUpPage
 
 class LoginPage extends StatefulWidget {
@@ -23,6 +25,11 @@ class _LoginPageState extends State<LoginPage> {
       await Auth().signInWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
+      );
+      // Navigate to the dashboard page after successful login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage(title: 'm',)),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -68,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Text(isLogin ? 'Don\'t have an account? Sign up instead' : 'Already have an account? Login'),
       style: TextButton.styleFrom(
-        foregroundColor: const Color(0xFF4ECB71), // Adjust color as needed
+        foregroundColor: const Color(0xFF4ECB71),
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
