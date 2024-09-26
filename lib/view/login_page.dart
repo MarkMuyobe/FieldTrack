@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mad_demo/pages/homepage.dart';
+import 'package:mad_demo/view/homepage.dart';
 
-import '../services/auth.dart';
+import '../controller/auth.dart';
 import 'dashboard.dart'; // Import the Dashboard page
 import 'sign_up.dart'; // Import the SignUpPage
 
