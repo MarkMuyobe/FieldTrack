@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mad_demo/mad_theme.dart';
+import 'package:mad_demo/model/mad_theme.dart';
 
 class Screen3 extends StatelessWidget {
   Screen3({super.key});

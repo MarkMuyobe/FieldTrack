@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../services/auth.dart'; // Ensure your authentication logic is included here
+import '../controller/auth.dart'; // Ensure your authentication logic is included here
+import '../stylers/gradient_text.dart';
 import 'login_page.dart'; // Import the LoginPage
 
 class SignUpPage extends StatefulWidget {
@@ -122,15 +123,14 @@ class _SignUpPageState extends State<SignUpPage> {
           child: ListView(
             shrinkWrap: true,
             children: [
-              const Text(
+              const GradientText(
                 'FIELDTRACK',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECB71), // Green color
+                gradient: LinearGradient(
+                  colors: [Color(0xFF4ECB71), // Hex color for #4ECB71 (green)
+                    Color(0xFF276538),],
                 ),
+                fontSize: 40,
+                fontFamily: 'Amuse-Bouche',  // Optional: Your custom font
               ),
               const SizedBox(height: 32.0), // Add space after title
 
@@ -162,7 +162,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               const SizedBox(height: 16.0),
               FractionallySizedBox(
-                widthFactor: 0.5, // Adjusts the width to 50%
+                //widthFactor: 0.5, // Adjusts the width to 50%
                 child: DropdownButtonFormField<String>(
                   decoration: _inputDecoration('Job Title', const Icon(Icons.work)),
                   value: _selectedJobTitle,

@@ -1,6 +1,6 @@
-import 'services/auth.dart';
-import 'pages/homepage.dart';
-import 'pages/login_page.dart';
+import '../controller/auth.dart';
+import 'homepage.dart';
+import 'login_page.dart';
 import 'package:flutter/material.dart';
 
 class WidgetTree extends StatefulWidget {
