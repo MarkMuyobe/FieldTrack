@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mad_demo/view/homepage.dart';
-
 import '../controller/auth.dart';
 import 'dashboard.dart'; // Import the Dashboard page
 import 'sign_up.dart'; // Import the SignUpPage
+import '../stylers/gradient_text.dart'; // Import the GradientText for the AppBar
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String? errorMessage = '';
   bool isLogin = true;
+  bool _passwordVisible = false; // Password visibility toggle
 
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
@@ -29,20 +30,7 @@ class _LoginPageState extends State<LoginPage> {
       // Navigate to the dashboard page after successful login
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MyHomePage(title: 'm',)),
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        errorMessage = e.message;
-      });
-    }
-  }
-
-  Future<void> createUserWithEmailAndPassword() async {
-    try {
-      await Auth().createUserWithEmailAndPassword(
-        email: _controllerEmail.text,
-        password: _controllerPassword.text,
+        MaterialPageRoute(builder: (context) => MyHomePage(title: 'm')),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -55,126 +43,140 @@ class _LoginPageState extends State<LoginPage> {
     return Text(errorMessage == '' ? '' : 'Hmm? $errorMessage');
   }
 
-  void _navigateToSignUpPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SignUpPage()),
-    );
-  }
-
   Widget _loginOrRegisterButton() {
-    return TextButton(
-      onPressed: () {
-        if (isLogin) {
-          _navigateToSignUpPage();
-        } else {
-          setState(() {
-            isLogin = !isLogin;
-          });
-        }
-      },
-      child: Text(isLogin ? 'Don\'t have an account? Sign up instead' : 'Already have an account? Login'),
-      style: TextButton.styleFrom(
-        foregroundColor: const Color(0xFF4ECB71),
-        padding: EdgeInsets.zero,
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-    );
-  }
-
-  InputDecoration _inputDecoration(String labelText, Icon icon) {
-    const borderColor = Color(0xFF4ECB71);
-    return InputDecoration(
-      labelText: labelText,
-      prefixIcon: icon,
-      border: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        borderSide: BorderSide(color: borderColor),
-      ),
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        borderSide: BorderSide(color: borderColor),
-      ),
-      focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        borderSide: BorderSide(color: borderColor),
-      ),
-      errorBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        borderSide: BorderSide(color: borderColor),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Don't have an account?",
+          style: Theme.of(context).textTheme.subtitle2,
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SignUpPage()),
+            );
+          },
+          child: Text(
+            'Sign up',
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+        ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    const borderColor = Color(0xFF4ECB71); // Consistent border color
+
+    // Create a border style for input fields
+    final borderStyle = OutlineInputBorder(
+      borderSide: BorderSide(color: borderColor, width: 1.5),
+      borderRadius: BorderRadius.circular(20),
+    );
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
+      appBar: AppBar(
+        automaticallyImplyLeading: false, // Prevent back button from appearing
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: const GradientText(
+            'FIELDTRACK',
+            gradient: LinearGradient(
+              colors: [Color(0xFF4ECB71), Color(0xFF276538)],
+            ),
+            fontSize: 40,
+            fontFamily: 'Amuse-Bouche',
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).backgroundColor,
+        elevation: 0,
+      ),
+      body: Center( // Center the form vertically
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'FIELDTRACK',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 40.0,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECB71),
-                ),
-              ),
               const SizedBox(height: 32.0),
+              // Email field
               TextFormField(
                 controller: _controllerEmail,
-                decoration: _inputDecoration('Email', const Icon(Icons.email)),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(20.0),
+                  labelText: 'Email',
+                  labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
+                  enabledBorder: borderStyle, // Use the border style
+                  focusedBorder: borderStyle, // Use the border style
+                ),
                 keyboardType: TextInputType.emailAddress,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 20.0),
+              // Password field with visibility toggle
               TextFormField(
                 controller: _controllerPassword,
-                obscureText: true,
-                decoration: _inputDecoration('Password', const Icon(Icons.lock)),
-              ),
-              const SizedBox(height: 16.0),
-              _errorMessage(),
-              const SizedBox(height: 16.0),
-
-              // Login Button with Gradient
-              FractionallySizedBox(
-                widthFactor: 0.5,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF4ECB71), Color(0xFF276538)], // Gradient colors
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                obscureText: !_passwordVisible,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(20.0),
+                  labelText: 'Password',
+                  labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
+                  enabledBorder: borderStyle, // Use the border style
+                  focusedBorder: borderStyle, // Use the border style
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: const Color(0xFFFFFFFF),
                     ),
-                    borderRadius: BorderRadius.circular(24.0),
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () => {
-                      if (isLogin) {
-                        signInWithEmailAndPassword()
-                      } else {
-                        createUserWithEmailAndPassword()
-                      }
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible; // Toggle visibility
+                      });
                     },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      backgroundColor: Colors.transparent, // Set background to transparent to see gradient
-                      shadowColor: Colors.transparent, // Remove any button shadows
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-                      ),
+                  ),
+                ),
+                style: Theme.of(context).textTheme.subtitle2,
+              ),
+              const SizedBox(height: 10.0), // Reduced space
+              _errorMessage(),
+              const SizedBox(height: 5.0),
+              // Login Button with Gradient
+              // Login Button with Gradient
+              Container(
+                padding: const EdgeInsets.all(5.0), // Add padding around the button
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF4ECB71), // #4ECB71 (light green)
+                      Color(0xFF276538), // #276538 (dark green)
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(30.0), // Rounded edges
+                ),
+                child: ElevatedButton(
+                  onPressed: signInWithEmailAndPassword,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent, // Make the button background transparent
+                    shadowColor: Colors.transparent, // Remove button shadow
+                  ),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(
+                      color: Colors.white, // White text color
+                      fontSize: 16, // Text size for the login button
                     ),
-                    child: Text(isLogin ? 'Login' : 'Sign Up'),
                   ),
                 ),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 5.0), // Reduced space
+              // Navigation to Sign Up
               _loginOrRegisterButton(),
             ],
           ),
