@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'dashboard.dart'; // Import the Dashboard screen
+import 'screens.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -16,7 +16,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _pages = <Widget>[
     Dashboard(), // Dashboard page
-    const Center(child: Text('Notifications', style: TextStyle(fontSize: 24))),
+    ServiceRequestList(),
     const Center(child: Text('Add', style: TextStyle(fontSize: 24))),
     const Center(child: Text('Calendar', style: TextStyle(fontSize: 24))),
     const Center(child: Text('Settings', style: TextStyle(fontSize: 24))),
@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
         height: 60, // Curved bar height
         items: const <Widget>[
           Icon(Icons.home_filled, size: 30, color: Colors.white), // Home icon
-          Icon(Icons.notifications, size: 30, color: Colors.white), // Notifications icon
+          Icon(Icons.list_alt, size: 30, color: Colors.white), // Notifications icon
           Icon(Icons.add, size: 30, color: Colors.white), // Add icon
           Icon(Icons.calendar_today, size: 30, color: Colors.white), // Calendar icon
           Icon(Icons.settings, size: 30, color: Colors.white), // Settings icon
