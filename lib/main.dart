@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'pages/screens.dart';
-import 'pages/login_page.dart';
-import 'pages/sign_up.dart';
-import 'mad_theme.dart';
-import 'pages/greeting.dart';
+import 'view/screens.dart';
+import 'view/login_page.dart';
+import 'view/sign_up.dart';
+import 'model/mad_theme.dart';
+import 'view/greeting.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       theme: theme,
+      debugShowCheckedModeBanner: false,
       home: const GreetingPage(), // Set the GreetingPage as the first page
       routes: {
         'Screen3': (context) => Screen3(),
