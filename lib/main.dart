@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       theme: theme,
+      debugShowCheckedModeBanner: false,
       home: const GreetingPage(), // Set the GreetingPage as the first page
       routes: {
         'Screen3': (context) => Screen3(),

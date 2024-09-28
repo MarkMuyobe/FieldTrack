@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../controller/auth.dart'; // Ensure your authentication logic is included here
+import '../controller/auth.dart';
 import '../stylers/gradient_text.dart';
-import 'login_page.dart'; // Import the LoginPage
+import 'login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
