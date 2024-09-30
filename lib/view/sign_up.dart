@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../controller/auth.dart';
+import '../model/input_decoration.dart';
 import '../stylers/gradient_text.dart';
 import 'login_page.dart';
 
@@ -15,7 +17,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String? errorMessage = '';
   bool isSignUp = true; // Allows switching between login and sign-up
 
-  final TextEditingController _controllerUsername = TextEditingController();
+  final TextEditingController _controllerFirstName = TextEditingController();
+  final TextEditingController _controllerSurname = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPhone = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
@@ -25,7 +28,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void dispose() {
-    _controllerUsername.dispose();
+    _controllerFirstName.dispose();
+    _controllerSurname.dispose();
     _controllerEmail.dispose();
     _controllerPhone.dispose();
     _controllerPassword.dispose();
@@ -33,18 +37,41 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  //Todo add firestore
-
   Future<void> createUserWithEmailAndPassword() async {
     if (_controllerPassword.text == _controllerRepeatPassword.text) {
       try {
-        await Auth().createUserWithEmailAndPassword(
+        UserCredential authResult = await Auth().createUserWithEmailAndPassword(
           email: _controllerEmail.text,
           password: _controllerPassword.text,
         );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully')),
-        );
+
+        User? user = authResult.user;
+
+        if (user != null){
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+            'firstName': _controllerFirstName.text,
+            'surname': _controllerSurname.text,
+            'email': _controllerEmail.text,
+            'phoneNumber': _controllerPhone.text,
+            'role': _selectedJobTitle, // e.g., Technician, Manager
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+
+
+
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Account created successfully')),
+          );
+          Navigator.of(context).pushNamed('/homepage');
+        } else {
+          setState(() {
+            errorMessage = 'failed to create user';
+          });
+        }
+
+
       } on FirebaseAuthException catch (e) {
         setState(() {
           errorMessage = e.message;
@@ -93,28 +120,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     const borderColor = Color(0xFF4ECB71);
 
-    InputDecoration _inputDecoration(String labelText, Icon icon) {
-      return InputDecoration(
-        labelText: labelText,
-        prefixIcon: icon,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24.0)),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24.0)),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24.0)),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        errorBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24.0)),
-          borderSide: BorderSide(color: borderColor),
-        ),
-      );
-    }
+
 
     return Scaffold(
       body: Padding(
@@ -135,36 +141,41 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 32.0), // Add space after title
 
               TextFormField(
-                controller: _controllerUsername,
-                decoration: _inputDecoration('Username', const Icon(Icons.person)),
+                controller: _controllerFirstName,
+                decoration: inputDecoration('First Name', const Icon(Icons.person)),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _controllerSurname,
+                decoration: inputDecoration('Surname', const Icon(Icons.person)),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _controllerEmail,
-                decoration: _inputDecoration('Email', const Icon(Icons.email)),
+                decoration: inputDecoration('Email', const Icon(Icons.email)),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _controllerPhone,
-                decoration: _inputDecoration('Phone', const Icon(Icons.phone)),
+                decoration: inputDecoration('Phone', const Icon(Icons.phone)),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _controllerPassword,
                 obscureText: true,
-                decoration: _inputDecoration('Password', const Icon(Icons.lock)),
+                decoration: inputDecoration('Password', const Icon(Icons.lock)),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _controllerRepeatPassword,
                 obscureText: true,
-                decoration: _inputDecoration('Confirm Password', const Icon(Icons.lock_outline)),
+                decoration: inputDecoration('Confirm Password', const Icon(Icons.lock_outline)),
               ),
               const SizedBox(height: 16.0),
               FractionallySizedBox(
                 //widthFactor: 0.5, // Adjusts the width to 50%
                 child: DropdownButtonFormField<String>(
-                  decoration: _inputDecoration('Job Title', const Icon(Icons.work)),
+                  decoration: inputDecoration('Job Title', const Icon(Icons.work)),
                   value: _selectedJobTitle,
                   items: _jobTitles.map((String jobTitle) {
                     return DropdownMenuItem<String>(
@@ -180,6 +191,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               const SizedBox(height: 16.0),
+              _errorMessage(),
 
               FractionallySizedBox(
                 widthFactor: 0.5, // Adjusts the width to 50%

@@ -18,12 +18,12 @@ class Auth {
         password: password);
   }
 
-  Future<void> createUserWithEmailAndPassword({
+  Future<UserCredential> createUserWithEmailAndPassword({
     required email,
     required password,
   })async {
     try{
-      await _firebaseAuth.createUserWithEmailAndPassword(
+      return await _firebaseAuth.createUserWithEmailAndPassword(
           email: email,
           password: password);
     } on FirebaseAuthException catch (e){
@@ -41,8 +41,9 @@ class Auth {
         textColor: Colors.green,
         fontSize: 14.0
       );
+      rethrow;
 
-    }catch (e){}
+    }
   }
 
   Future<void> signOut() async {

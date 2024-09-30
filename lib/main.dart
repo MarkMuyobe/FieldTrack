@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const GreetingPage(), // Set the GreetingPage as the first page
       routes: {
+        '/homepage': (context) => MyHomePage(title: 'FieldTrack'),
         'Screen3': (context) => Screen3(),
         '/login': (context) => const LoginPage(), // Route for LoginPage
         '/signup': (context) => const SignUpPage(), // Route for SignUpPage

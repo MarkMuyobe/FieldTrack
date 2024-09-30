@@ -17,7 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = <Widget>[
     Dashboard(), // Dashboard page
     ServiceRequestList(),
-    const Center(child: Text('Add', style: TextStyle(fontSize: 24))),
+    ServiceRequestForm(),
     const Center(child: Text('Calendar', style: TextStyle(fontSize: 24))),
     const Center(child: Text('Settings', style: TextStyle(fontSize: 24))),
   ];

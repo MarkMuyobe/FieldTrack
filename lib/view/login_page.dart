@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mad_demo/view/homepage.dart';
-
+import 'package:mad_demo/model/models.dart';
 import '../controller/auth.dart';
 import 'dashboard.dart'; // Import the Dashboard page
 import 'sign_up.dart'; // Import the SignUpPage
@@ -83,29 +83,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  InputDecoration _inputDecoration(String labelText, Icon icon) {
-    const borderColor = Color(0xFF4ECB71);
-    return InputDecoration(
-      labelText: labelText,
-      prefixIcon: icon,
-      border: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        borderSide: BorderSide(color: borderColor),
-      ),
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        borderSide: BorderSide(color: borderColor),
-      ),
-      focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        borderSide: BorderSide(color: borderColor),
-      ),
-      errorBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24.0)),
-        borderSide: BorderSide(color: borderColor),
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -129,14 +107,14 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 32.0),
               TextFormField(
                 controller: _controllerEmail,
-                decoration: _inputDecoration('Email', const Icon(Icons.email)),
+                decoration: inputDecoration('Email', const Icon(Icons.email)),
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _controllerPassword,
                 obscureText: true,
-                decoration: _inputDecoration('Password', const Icon(Icons.lock)),
+                decoration: inputDecoration('Password', const Icon(Icons.lock)),
               ),
               const SizedBox(height: 16.0),
               _errorMessage(),
