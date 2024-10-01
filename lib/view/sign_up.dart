@@ -109,6 +109,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     focusedErrorBorder: borderStyle.copyWith(
                       borderSide: const BorderSide(color: Colors.red),
                     ),
+                    prefixIcon: const Icon(Icons.person), // Added icon here
                   ),
                   style: Theme.of(context).textTheme.titleSmall,
                   validator: (value) {
@@ -118,7 +119,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
                 TextFormField(
                   controller: _controllerEmail,
                   decoration: InputDecoration(
@@ -133,6 +134,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     focusedErrorBorder: borderStyle.copyWith(
                       borderSide: const BorderSide(color: Colors.red),
                     ),
+                    prefixIcon: const Icon(Icons.email), // Added icon here
                   ),
                   style: Theme.of(context).textTheme.titleSmall,
                   validator: (value) {
@@ -142,7 +144,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
                 TextFormField(
                   controller: _controllerPhone,
                   decoration: InputDecoration(
@@ -157,6 +159,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     focusedErrorBorder: borderStyle.copyWith(
                       borderSide: const BorderSide(color: Colors.red),
                     ),
+                    prefixIcon: const Icon(Icons.phone), // Added icon here
                   ),
                   style: Theme.of(context).textTheme.titleSmall,
                   validator: (value) {
@@ -166,7 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
                 TextFormField(
                   controller: _controllerPassword,
                   obscureText: !_isPasswordVisible,
@@ -182,6 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     focusedErrorBorder: borderStyle.copyWith(
                       borderSide: const BorderSide(color: Colors.red),
                     ),
+                    prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -202,7 +206,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
                 TextFormField(
                   controller: _controllerRepeatPassword,
                   obscureText: !_isConfirmPasswordVisible,
@@ -218,6 +222,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     focusedErrorBorder: borderStyle.copyWith(
                       borderSide: const BorderSide(color: Colors.red),
                     ),
+                    prefixIcon: const Icon(Icons.lock_outline), // Added icon here
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -238,7 +243,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -283,6 +288,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
                             enabledBorder: borderStyle,
                             focusedBorder: borderStyle,
+                            prefixIcon: const Icon(Icons.work, color: Colors.white),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -294,7 +300,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 12),
                   ],
                 ),
                 Container(
@@ -326,7 +332,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -335,16 +341,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const LoginPage()),
-                        );
-                      },
-                      child: Text(
-                        'Login',
-                        style: TextStyle(color: Theme.of(context).primaryColor),
-                      ),
+                      onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);},
+                      child: Text('Login', style: TextStyle(color: Theme.of(context).primaryColor),),
                     ),
                   ],
                 ),
