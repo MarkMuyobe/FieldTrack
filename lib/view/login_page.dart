@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mad_demo/view/homepage.dart';
-import '../controller/auth.dart';
-import 'dashboard.dart'; // Import the Dashboard page
-import 'sign_up.dart'; // Import the SignUpPage
-import '../stylers/gradient_text.dart'; // Import the GradientText for the AppBar
+
+import 'package:mad_demo/model/models.dart';
+import 'package:provider/provider.dart';
+import '../model/user_provider.dart';
+import 'sign_up.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,26 +15,37 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String? errorMessage = '';
-  bool isLogin = true;
-  bool _passwordVisible = false; // Password visibility toggle
+  bool isLoading = false;
 
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
   Future<void> signInWithEmailAndPassword() async {
+    if (_controllerEmail.text.isEmpty || _controllerPassword.text.isEmpty) {
+      setState(() {
+        errorMessage = 'Please fill in all fields';
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      errorMessage = '';
+    });
+
     try {
-      await Auth().signInWithEmailAndPassword(
-        email: _controllerEmail.text,
-        password: _controllerPassword.text,
+      await Provider.of<UserProvider>(context, listen: false).signIn(
+        _controllerEmail.text,
+        _controllerPassword.text,
       );
-      // Navigate to the dashboard page after successful login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MyHomePage(title: 'm')),
-      );
+      Navigator.pushReplacementNamed(context, '/homepage');
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
       });
     }
   }
@@ -44,26 +55,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginOrRegisterButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Don't have an account?",
-          style: Theme.of(context).textTheme.subtitle2,
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SignUpPage()),
-            );
-          },
-          child: Text(
-            'Sign up',
-            style: TextStyle(color: Theme.of(context).primaryColor),
-          ),
-        ),
-      ],
+    return TextButton(
+      onPressed: _navigateToSignUpPage,
+      style: TextButton.styleFrom(
+        foregroundColor: const Color(0xFF4ECB71),
+        padding: EdgeInsets.zero,
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: const Text('Don\'t have an account? Sign up'),
+
     );
   }
 
@@ -105,13 +106,7 @@ class _LoginPageState extends State<LoginPage> {
               // Email field
               TextFormField(
                 controller: _controllerEmail,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(20.0),
-                  labelText: 'Email',
-                  labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
-                  enabledBorder: borderStyle, // Use the border style
-                  focusedBorder: borderStyle, // Use the border style
-                ),
+                decoration: inputDecoration('Email', const Icon(Icons.email)),
                 keyboardType: TextInputType.emailAddress,
                 style: Theme.of(context).textTheme.subtitle2,
               ),
@@ -119,28 +114,8 @@ class _LoginPageState extends State<LoginPage> {
               // Password field with visibility toggle
               TextFormField(
                 controller: _controllerPassword,
-                obscureText: !_passwordVisible,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(20.0),
-                  labelText: 'Password',
-                  labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
-                  enabledBorder: borderStyle, // Use the border style
-                  focusedBorder: borderStyle, // Use the border style
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: const Color(0xFFFFFFFF),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible; // Toggle visibility
-                      });
-                    },
-                  ),
-                ),
-                style: Theme.of(context).textTheme.subtitle2,
+                obscureText: true,
+                decoration: inputDecoration('Password', const Icon(Icons.lock)),
               ),
               const SizedBox(height: 10.0), // Reduced space
               _errorMessage(),
@@ -158,20 +133,19 @@ class _LoginPageState extends State<LoginPage> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(30.0), // Rounded edges
-                ),
-                child: ElevatedButton(
-                  onPressed: signInWithEmailAndPassword,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent, // Make the button background transparent
-                    shadowColor: Colors.transparent, // Remove button shadow
-                  ),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Colors.white, // White text color
-                      fontSize: 16, // Text size for the login button
+                  child: ElevatedButton(
+                    onPressed: isLoading ? null : signInWithEmailAndPassword,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      backgroundColor: Colors.transparent, // Set background to transparent to see gradient
+                      shadowColor: Colors.transparent, // Remove any button shadows
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                      ),
                     ),
+                    child: isLoading 
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : const Text('Login'),
                   ),
                 ),
               ),

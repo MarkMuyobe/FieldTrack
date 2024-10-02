@@ -1,8 +1,15 @@
+
+//import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../controller/auth.dart';
+//import '../controller/auth.dart';
+import '../model/input_decoration.dart';
+
 import '../stylers/gradient_text.dart';
 import 'login_page.dart';
+import 'package:provider/provider.dart';
+import '../model/user_provider.dart';
+import '../model/user.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -16,20 +23,18 @@ class _SignUpPageState extends State<SignUpPage> {
   String? _selectedJobTitle;
   final List<String> _jobTitles = ['Technicians', 'Admin', 'Manager'];
 
-  final TextEditingController _controllerUsername = TextEditingController();
+  final TextEditingController _controllerFirstName = TextEditingController();
+  final TextEditingController _controllerSurname = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPhone = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerRepeatPassword = TextEditingController();
 
-  bool _isPasswordVisible = false;
-  bool _isConfirmPasswordVisible = false;
-
-  String? errorMessage = '';
 
   @override
   void dispose() {
-    _controllerUsername.dispose();
+    _controllerFirstName.dispose();
+    _controllerSurname.dispose();
     _controllerEmail.dispose();
     _controllerPhone.dispose();
     _controllerPassword.dispose();
@@ -40,16 +45,24 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> createUserWithEmailAndPassword() async {
     if (_controllerPassword.text == _controllerRepeatPassword.text) {
       try {
-        await Auth().createUserWithEmailAndPassword(
+        final newUser = User(
+          uid: '', // This will be set by Firebase
+          firstName: _controllerFirstName.text,
+          surname: _controllerSurname.text,
           email: _controllerEmail.text,
-          password: _controllerPassword.text,
+          phoneNumber: _controllerPhone.text,
+          role: UserRole.user, // Default role set to 'user'
         );
+
+        await Provider.of<UserProvider>(context, listen: false).signUp(newUser, _controllerPassword.text);
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created successfully')),
         );
-      } on FirebaseAuthException catch (e) {
+        Navigator.of(context).pushNamed('/homepage');
+      } catch (e) {
         setState(() {
-          errorMessage = e.message;
+          errorMessage = e.toString();
         });
       }
     } else {
@@ -61,11 +74,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    const borderColor = Color(0xFF4ECB71);
-    final borderStyle = OutlineInputBorder(
-      borderSide: const BorderSide(color: borderColor, width: 1.5),
-      borderRadius: BorderRadius.circular(20),
-    );
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -119,192 +127,49 @@ class _SignUpPageState extends State<SignUpPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _controllerEmail,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20.0),
-                    labelText: 'Email',
-                    labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
-                    enabledBorder: borderStyle,
-                    focusedBorder: borderStyle,
-                    errorBorder: borderStyle.copyWith(
-                      borderSide: const BorderSide(color: Colors.red),
-                    ),
-                    focusedErrorBorder: borderStyle.copyWith(
-                      borderSide: const BorderSide(color: Colors.red),
-                    ),
-                    prefixIcon: const Icon(Icons.email), // Added icon here
-                  ),
-                  style: Theme.of(context).textTheme.titleSmall,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _controllerPhone,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20.0),
-                    labelText: 'Phone',
-                    labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
-                    enabledBorder: borderStyle,
-                    focusedBorder: borderStyle,
-                    errorBorder: borderStyle.copyWith(
-                      borderSide: const BorderSide(color: Colors.red),
-                    ),
-                    focusedErrorBorder: borderStyle.copyWith(
-                      borderSide: const BorderSide(color: Colors.red),
-                    ),
-                    prefixIcon: const Icon(Icons.phone), // Added icon here
-                  ),
-                  style: Theme.of(context).textTheme.titleSmall,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _controllerPassword,
-                  obscureText: !_isPasswordVisible,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20.0),
-                    labelText: 'Password',
-                    labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
-                    enabledBorder: borderStyle,
-                    focusedBorder: borderStyle,
-                    errorBorder: borderStyle.copyWith(
-                      borderSide: const BorderSide(color: Colors.red),
-                    ),
-                    focusedErrorBorder: borderStyle.copyWith(
-                      borderSide: const BorderSide(color: Colors.red),
-                    ),
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  style: Theme.of(context).textTheme.titleSmall,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _controllerRepeatPassword,
-                  obscureText: !_isConfirmPasswordVisible,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(20.0),
-                    labelText: 'Confirm Password',
-                    labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
-                    enabledBorder: borderStyle,
-                    focusedBorder: borderStyle,
-                    errorBorder: borderStyle.copyWith(
-                      borderSide: const BorderSide(color: Colors.red),
-                    ),
-                    focusedErrorBorder: borderStyle.copyWith(
-                      borderSide: const BorderSide(color: Colors.red),
-                    ),
-                    prefixIcon: const Icon(Icons.lock_outline), // Added icon here
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                  style: Theme.of(context).textTheme.titleSmall,
-                  validator: (value) {
-                    if (value != _controllerPassword.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return SimpleDialog(
-                                backgroundColor: Colors.black,
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                children: _jobTitles.map((String jobTitle) {
-                                  return SimpleDialogOption(
-                                    onPressed: () {
-                                      setState(() {
-                                        _selectedJobTitle = jobTitle;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                      child: Text(
-                                        jobTitle,
-                                        style: const TextStyle(color: Colors.green, fontSize: 16),
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                              );
-                            },
-                          );
-                        },
-                        child: InputDecorator(
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
-                            labelText: 'Job Title',
-                            labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
-                            enabledBorder: borderStyle,
-                            focusedBorder: borderStyle,
-                            prefixIcon: const Icon(Icons.work, color: Colors.white),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Text(
-                              _selectedJobTitle ?? 'Select Job Title',
-                              style: const TextStyle(color: Colors.white, fontSize: 14),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5.0),
+                fontSize: 40,
+                fontFamily: 'Amuse-Bouche',  // Optional: Your custom font
+              ),
+              const SizedBox(height: 32.0), // Add space after title
+
+              TextFormField(
+                controller: _controllerFirstName,
+                decoration: inputDecoration('First Name', const Icon(Icons.person)),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _controllerSurname,
+                decoration: inputDecoration('Surname', const Icon(Icons.person)),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _controllerEmail,
+                decoration: inputDecoration('Email', const Icon(Icons.email)),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _controllerPhone,
+                decoration: inputDecoration('Phone', const Icon(Icons.phone)),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _controllerPassword,
+                obscureText: true,
+                decoration: inputDecoration('Password', const Icon(Icons.lock)),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _controllerRepeatPassword,
+                obscureText: true,
+                decoration: inputDecoration('Confirm Password', const Icon(Icons.lock_outline)),
+              ),
+              const SizedBox(height: 16.0),
+              _errorMessage(),
+
+              FractionallySizedBox(
+                widthFactor: 0.5, // Adjusts the width to 50%
+                child: GestureDetector(
+                  onTap: () => createUserWithEmailAndPassword(),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                     decoration: BoxDecoration(

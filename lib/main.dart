@@ -6,11 +6,18 @@ import 'view/login_page.dart';
 import 'view/sign_up.dart';
 import 'model/mad_theme.dart';
 import 'view/greeting.dart';
+import 'package:provider/provider.dart';
+import 'model/user_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -25,6 +32,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const GreetingPage(), // Set the GreetingPage as the first page
       routes: {
+        '/homepage': (context) => MyHomePage(title: 'FieldTrack'),
         'Screen3': (context) => Screen3(),
         '/login': (context) => const LoginPage(), // Route for LoginPage
         '/signup': (context) => const SignUpPage(), // Route for SignUpPage
