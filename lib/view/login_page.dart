@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mad_demo/view/homepage.dart';
 import 'package:mad_demo/model/models.dart';
-import '../controller/auth.dart';
-import 'dashboard.dart'; // Import the Dashboard page
-import 'sign_up.dart'; // Import the SignUpPage
+import 'package:provider/provider.dart';
+import '../model/user_provider.dart';
+import 'sign_up.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,38 +14,37 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String? errorMessage = '';
-  bool isLogin = true;
+  bool isLoading = false;
 
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
   Future<void> signInWithEmailAndPassword() async {
+    if (_controllerEmail.text.isEmpty || _controllerPassword.text.isEmpty) {
+      setState(() {
+        errorMessage = 'Please fill in all fields';
+      });
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+      errorMessage = '';
+    });
+
     try {
-      await Auth().signInWithEmailAndPassword(
-        email: _controllerEmail.text,
-        password: _controllerPassword.text,
+      await Provider.of<UserProvider>(context, listen: false).signIn(
+        _controllerEmail.text,
+        _controllerPassword.text,
       );
-      // Navigate to the dashboard page after successful login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MyHomePage(title: 'm',)),
-      );
+      Navigator.pushReplacementNamed(context, '/homepage');
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
       });
-    }
-  }
-
-  Future<void> createUserWithEmailAndPassword() async {
-    try {
-      await Auth().createUserWithEmailAndPassword(
-        email: _controllerEmail.text,
-        password: _controllerPassword.text,
-      );
-    } on FirebaseAuthException catch (e) {
+    } finally {
       setState(() {
-        errorMessage = e.message;
+        isLoading = false;
       });
     }
   }
@@ -64,26 +62,16 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginOrRegisterButton() {
     return TextButton(
-      onPressed: () {
-        if (isLogin) {
-          _navigateToSignUpPage();
-        } else {
-          setState(() {
-            isLogin = !isLogin;
-          });
-        }
-      },
-      child: Text(isLogin ? 'Don\'t have an account? Sign up instead' : 'Already have an account? Login'),
+      onPressed: _navigateToSignUpPage,
       style: TextButton.styleFrom(
         foregroundColor: const Color(0xFF4ECB71),
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
+      child: const Text('Don\'t have an account? Sign up'),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -133,13 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(24.0),
                   ),
                   child: ElevatedButton(
-                    onPressed: () => {
-                      if (isLogin) {
-                        signInWithEmailAndPassword()
-                      } else {
-                        createUserWithEmailAndPassword()
-                      }
-                    },
+                    onPressed: isLoading ? null : signInWithEmailAndPassword,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       backgroundColor: Colors.transparent, // Set background to transparent to see gradient
@@ -148,7 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.all(Radius.circular(24.0)),
                       ),
                     ),
-                    child: Text(isLogin ? 'Login' : 'Sign Up'),
+                    child: isLoading 
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : const Text('Login'),
                   ),
                 ),
               ),

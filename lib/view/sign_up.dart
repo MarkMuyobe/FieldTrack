@@ -1,10 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
-import '../controller/auth.dart';
+//import '../controller/auth.dart';
 import '../model/input_decoration.dart';
 import '../stylers/gradient_text.dart';
 import 'login_page.dart';
+import 'package:provider/provider.dart';
+import '../model/user_provider.dart';
+import '../model/user.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -23,8 +26,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _controllerPhone = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerRepeatPassword = TextEditingController();
-  String? _selectedJobTitle;
-  final List<String> _jobTitles = ['Technicians', 'Admin', 'Manager'];
 
   @override
   void dispose() {
@@ -40,41 +41,24 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> createUserWithEmailAndPassword() async {
     if (_controllerPassword.text == _controllerRepeatPassword.text) {
       try {
-        UserCredential authResult = await Auth().createUserWithEmailAndPassword(
+        final newUser = User(
+          uid: '', // This will be set by Firebase
+          firstName: _controllerFirstName.text,
+          surname: _controllerSurname.text,
           email: _controllerEmail.text,
-          password: _controllerPassword.text,
+          phoneNumber: _controllerPhone.text,
+          role: UserRole.user, // Default role set to 'user'
         );
 
-        User? user = authResult.user;
+        await Provider.of<UserProvider>(context, listen: false).signUp(newUser, _controllerPassword.text);
 
-        if (user != null){
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-            'firstName': _controllerFirstName.text,
-            'surname': _controllerSurname.text,
-            'email': _controllerEmail.text,
-            'phoneNumber': _controllerPhone.text,
-            'role': _selectedJobTitle, // e.g., Technician, Manager
-            'createdAt': FieldValue.serverTimestamp(),
-          });
-
-
-
-
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Account created successfully')),
-          );
-          Navigator.of(context).pushNamed('/homepage');
-        } else {
-          setState(() {
-            errorMessage = 'failed to create user';
-          });
-        }
-
-
-      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account created successfully')),
+        );
+        Navigator.of(context).pushNamed('/homepage');
+      } catch (e) {
         setState(() {
-          errorMessage = e.message;
+          errorMessage = e.toString();
         });
       }
     } else {
@@ -118,9 +102,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    const borderColor = Color(0xFF4ECB71);
-
-
+    //const borderColor = Color(0xFF4ECB71);
 
     return Scaffold(
       body: Padding(
@@ -170,25 +152,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: _controllerRepeatPassword,
                 obscureText: true,
                 decoration: inputDecoration('Confirm Password', const Icon(Icons.lock_outline)),
-              ),
-              const SizedBox(height: 16.0),
-              FractionallySizedBox(
-                //widthFactor: 0.5, // Adjusts the width to 50%
-                child: DropdownButtonFormField<String>(
-                  decoration: inputDecoration('Job Title', const Icon(Icons.work)),
-                  value: _selectedJobTitle,
-                  items: _jobTitles.map((String jobTitle) {
-                    return DropdownMenuItem<String>(
-                      value: jobTitle,
-                      child: Text(jobTitle),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedJobTitle = newValue;
-                    });
-                  },
-                ),
               ),
               const SizedBox(height: 16.0),
               _errorMessage(),
