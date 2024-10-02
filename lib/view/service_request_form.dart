@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mad_demo/model/models.dart';
+import 'package:simple_location_picker/simple_location_picker_screen.dart';
 import 'dart:io';
+
+import 'package:simple_location_picker/simple_location_result.dart';
+import 'package:simple_location_picker/utils/slp_constants.dart';
 
 
 
@@ -19,6 +24,7 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
   int _day = 1, _month = 1, _year = 2024;
   File? _image;
   final picker = ImagePicker();
+  SimpleLocationResult? _selectedLocation;
 
   Future<void> _pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -34,7 +40,9 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Service Request Form')),
+      appBar: AppBar(title: Text('Service Request Form',
+        style: TextStyle(fontSize: 16),
+      )),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -43,10 +51,7 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
             children: [
               // Name Field
               TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                ),
+                decoration: inputDecoration('Name', const Icon(Icons.person_outline)),
                 onChanged: (value) {
                   _serviceName = value;
                 },
@@ -55,10 +60,7 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
 
               // Description Field
               TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(),
-                ),
+                decoration: inputDecoration('Description', const Icon(Icons.edit)),
                 maxLines: 3,
                 onChanged: (value) {
                   _description = value;
@@ -68,10 +70,7 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
 
               // Service Type Dropdown
               DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Service type',
-                  border: OutlineInputBorder(),
-                ),
+                decoration: inputDecoration('Service type', const Icon(Icons.build)),
                 value: _serviceType,
                 items: ['Cleaning', 'Repair', 'Installation']
                     .map<DropdownMenuItem<String>>((String value) {
@@ -93,10 +92,7 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<int>(
-                      decoration: InputDecoration(
-                        labelText: 'Day',
-                        border: OutlineInputBorder(),
-                      ),
+                      decoration: inputDecoration('Day'),
                       value: _day,
                       items: List.generate(31, (index) => index + 1)
                           .map<DropdownMenuItem<int>>((int value) {
@@ -115,10 +111,7 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
                   SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField<int>(
-                      decoration: InputDecoration(
-                        labelText: 'Month',
-                        border: OutlineInputBorder(),
-                      ),
+                      decoration: inputDecoration('Month'),
                       value: _month,
                       items: List.generate(12, (index) => index + 1)
                           .map<DropdownMenuItem<int>>((int value) {
@@ -137,10 +130,7 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
                   SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField<int>(
-                      decoration: InputDecoration(
-                        labelText: 'Year',
-                        border: OutlineInputBorder(),
-                      ),
+                      decoration: inputDecoration('Year'),
                       value: _year,
                       items: List.generate(10, (index) => 2023 + index)
                           .map<DropdownMenuItem<int>>((int value) {
@@ -163,7 +153,26 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
               // Location Picker (using location_picker_flutter_map)
               TextButton.icon(
                 onPressed: () {
-                },
+                  double latitude = _selectedLocation?.latitude ?? -15.42;
+                  double longitude = _selectedLocation?.longitude ??  28.29;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context)=>
+                        SimpleLocationPicker(
+                          initialLatitude: latitude,
+                          initialLongitude: longitude,
+                          appBarTitle: 'Display Location',
+                        )
+                    )
+                  ).then((value){
+                    if(value != null){
+                      setState(() {
+                        _selectedLocation = value;
+                      });
+                    }
+                  });
+                  },
+
                 icon: Icon(Icons.location_on),
                 label: Text('Pick Location'),
               ),
@@ -186,6 +195,10 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
               ),
               SizedBox(height: 16),
 
+              _selectedLocation != null ? Text(
+                  'SELECTED: (${_selectedLocation?.latitude}, ${_selectedLocation
+                      ?.longitude})') : Container(),
+
               // Submit Button
               ElevatedButton(
                 onPressed: () {
@@ -196,6 +209,9 @@ class ServiceRequestFormState extends State<ServiceRequestForm> {
                 },
                 child: const Text('Submit'),
               ),
+
+              // Displays the picked location on the screen as text.
+
             ],
           ),
         ),

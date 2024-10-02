@@ -32,6 +32,7 @@ class MadTheme {
 
   static ThemeData dark() {
     return ThemeData(
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       brightness: Brightness.dark,
       appBarTheme: AppBarTheme(
         foregroundColor: Colors.white,
