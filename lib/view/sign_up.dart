@@ -1,8 +1,10 @@
+
 //import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 //import '../controller/auth.dart';
 import '../model/input_decoration.dart';
+
 import '../stylers/gradient_text.dart';
 import 'login_page.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +19,9 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  String? errorMessage = '';
-  bool isSignUp = true; // Allows switching between login and sign-up
+  final _formKey = GlobalKey<FormState>();
+  String? _selectedJobTitle;
+  final List<String> _jobTitles = ['Technicians', 'Admin', 'Manager'];
 
   final TextEditingController _controllerFirstName = TextEditingController();
   final TextEditingController _controllerSurname = TextEditingController();
@@ -26,6 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _controllerPhone = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerRepeatPassword = TextEditingController();
+
 
   @override
   void dispose() {
@@ -68,54 +72,60 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
-  Widget _errorMessage() {
-    return Text(errorMessage == '' ? '' : 'Hmm? $errorMessage');
-  }
-
-  void _navigateToLoginPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-    );
-  }
-
-  Widget _signUpOrLoginButton() {
-    return TextButton(
-      onPressed: () {
-        if (isSignUp) {
-          _navigateToLoginPage();
-        } else {
-          setState(() {
-            isSignUp = !isSignUp;
-          });
-        }
-      },
-      child: Text(isSignUp ? 'Already have an account? Login' : 'Don\'t have an account? Sign up instead'),
-      style: TextButton.styleFrom(
-        foregroundColor: const Color(0xFF4ECB71), // Adjust color as needed
-        padding: EdgeInsets.zero,
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    //const borderColor = Color(0xFF4ECB71);
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              const GradientText(
-                'FIELDTRACK',
-                gradient: LinearGradient(
-                  colors: [Color(0xFF4ECB71), // Hex color for #4ECB71 (green)
-                    Color(0xFF276538),],
+      backgroundColor: Theme.of(context).backgroundColor,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Padding(
+          padding: EdgeInsets.only(top: 20.0),
+          child: GradientText(
+            'FIELDTRACK',
+            gradient: LinearGradient(
+              colors: [Color(0xFF4ECB71), Color(0xFF276538)],
+            ),
+            fontSize: 40,
+            fontFamily: 'Amuse-Bouche',
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).backgroundColor,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  controller: _controllerUsername,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(20.0),
+                    labelText: 'Full Name',
+                    labelStyle: Theme.of(context).inputDecorationTheme.labelStyle,
+                    enabledBorder: borderStyle,
+                    focusedBorder: borderStyle,
+                    errorBorder: borderStyle.copyWith(
+                      borderSide: const BorderSide(color: Colors.red),
+                    ),
+                    focusedErrorBorder: borderStyle.copyWith(
+                      borderSide: const BorderSide(color: Colors.red),
+                    ),
+                    prefixIcon: const Icon(Icons.person), // Added icon here
+                  ),
+                  style: Theme.of(context).textTheme.titleSmall,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your full name';
+                    }
+                    return null;
+                  },
                 ),
                 fontSize: 40,
                 fontFamily: 'Amuse-Bouche',  // Optional: Your custom font
@@ -161,32 +171,48 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: GestureDetector(
                   onTap: () => createUserWithEmailAndPassword(),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF4ECB71), // #4ECB71 (light green)
-                          Color(0xFF276538), // #276538 (dark green)
-                        ],
+                        colors: [Color(0xFF4ECB71), Color(0xFF276538)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(24.0), // Rounded edges
+                      borderRadius: BorderRadius.circular(30.0),
                     ),
-                    child: const Text(
-                      'Sign Up',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          createUserWithEmailAndPassword();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                      ),
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16.0),
-              _signUpOrLoginButton(),
-            ],
+                const SizedBox(height: 0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Already have an account?',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    TextButton(
+                      onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);},
+                      child: Text('Login', style: TextStyle(color: Theme.of(context).primaryColor),),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:mad_demo/model/models.dart';
 import 'package:provider/provider.dart';
 import '../model/user_provider.dart';
@@ -53,13 +54,6 @@ class _LoginPageState extends State<LoginPage> {
     return Text(errorMessage == '' ? '' : 'Hmm? $errorMessage');
   }
 
-  void _navigateToSignUpPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SignUpPage()),
-    );
-  }
-
   Widget _loginOrRegisterButton() {
     return TextButton(
       onPressed: _navigateToSignUpPage,
@@ -70,55 +64,74 @@ class _LoginPageState extends State<LoginPage> {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: const Text('Don\'t have an account? Sign up'),
+
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    const borderColor = Color(0xFF4ECB71); // Consistent border color
+
+    // Create a border style for input fields
+    final borderStyle = OutlineInputBorder(
+      borderSide: BorderSide(color: borderColor, width: 1.5),
+      borderRadius: BorderRadius.circular(20),
+    );
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
+      appBar: AppBar(
+        automaticallyImplyLeading: false, // Prevent back button from appearing
+        title: Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: const GradientText(
+            'FIELDTRACK',
+            gradient: LinearGradient(
+              colors: [Color(0xFF4ECB71), Color(0xFF276538)],
+            ),
+            fontSize: 40,
+            fontFamily: 'Amuse-Bouche',
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).backgroundColor,
+        elevation: 0,
+      ),
+      body: Center( // Center the form vertically
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'FIELDTRACK',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 40.0,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECB71),
-                ),
-              ),
               const SizedBox(height: 32.0),
+              // Email field
               TextFormField(
                 controller: _controllerEmail,
                 decoration: inputDecoration('Email', const Icon(Icons.email)),
                 keyboardType: TextInputType.emailAddress,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 20.0),
+              // Password field with visibility toggle
               TextFormField(
                 controller: _controllerPassword,
                 obscureText: true,
                 decoration: inputDecoration('Password', const Icon(Icons.lock)),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 10.0), // Reduced space
               _errorMessage(),
-              const SizedBox(height: 16.0),
-
+              const SizedBox(height: 5.0),
               // Login Button with Gradient
-              FractionallySizedBox(
-                widthFactor: 0.5,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF4ECB71), Color(0xFF276538)], // Gradient colors
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(24.0),
+              // Login Button with Gradient
+              Container(
+                padding: const EdgeInsets.all(5.0), // Add padding around the button
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF4ECB71), // #4ECB71 (light green)
+                      Color(0xFF276538), // #276538 (dark green)
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                   child: ElevatedButton(
                     onPressed: isLoading ? null : signInWithEmailAndPassword,
@@ -136,7 +149,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 5.0), // Reduced space
+              // Navigation to Sign Up
               _loginOrRegisterButton(),
             ],
           ),
