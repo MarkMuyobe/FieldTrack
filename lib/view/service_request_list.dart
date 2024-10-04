@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/service_request.dart';
+import 'service_request_details_page.dart';  // Add this import
 
 class ServiceRequestList extends StatefulWidget {
   const ServiceRequestList({Key? key}) : super(key: key);
@@ -15,17 +16,7 @@ class _ServiceRequestListState extends State<ServiceRequestList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF00FF7F),
-        elevation: 0,
-        title: const Text(
-          'Service Requests',
-          style: TextStyle(color: Color(0xFF1E1E1E)),
-        ),
-      ),
-      body: Column(
+    return Column(
         children: [
           _buildSearchBar(),
           _buildFilterButtons(),
@@ -58,8 +49,7 @@ class _ServiceRequestListState extends State<ServiceRequestList> {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 
   Widget _buildSearchBar() {
@@ -75,19 +65,19 @@ class _ServiceRequestListState extends State<ServiceRequestList> {
             width: 2.0,
           ),
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 16.0),
+              padding: EdgeInsets.only(left: 16.0),
               child: Text(
                 'Search',
-                style: TextStyle(color: const Color(0xFF00FF7F)),
+                style: TextStyle(color: Color(0xFF00FF7F)),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Icon(Icons.search, color: const Color(0xFF00FF7F)),
+              padding: EdgeInsets.only(right: 16.0),
+              child: Icon(Icons.search, color: Color(0xFF00FF7F)),
             ),
           ],
         ),
@@ -178,6 +168,14 @@ class _ServiceRequestListState extends State<ServiceRequestList> {
           ),
         ),
         trailing: _buildStatusChip(serviceRequest.status),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ServiceRequestDetailsPage(serviceRequest: serviceRequest),
+            ),
+          );
+        },
       ),
     );
   }
@@ -203,7 +201,7 @@ class _ServiceRequestListState extends State<ServiceRequestList> {
       return _firestore.collection('service').snapshots();
     } else {
       return _firestore.collection('service')
-          .where('category', isEqualTo: _selectedFilter)
+          .where('category', isEqualTo: _selectedFilter)  // Keep this as 'category'
           .snapshots();
     }
   }

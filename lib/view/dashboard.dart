@@ -5,21 +5,7 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E), // Dark background color
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF3DAF), // Green app bar color
-        title: const Text(
-          'Dashboard',
-          style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black
-          ),
-        ),
-        automaticallyImplyLeading: false, // Remove back button
-      ),
-      body: Padding(
+    return  Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,8 +160,7 @@ class Dashboard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

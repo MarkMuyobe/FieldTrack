@@ -25,7 +25,7 @@ class User {
     required this.surname,
     required this.email,
     required this.phoneNumber,
-    this.role = UserRole.user,  // Set default role to 'user'
+    this.role = UserRole.user,
     this.profileImageUrl = '',
     this.department = '',
     this.employeeId = '',

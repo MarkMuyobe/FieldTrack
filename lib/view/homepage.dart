@@ -3,7 +3,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:provider/provider.dart';
 import 'screens.dart';
 import '../model/user.dart';
-import '../model/user_provider.dart';
+import '../controller/user_provider.dart';
 import 'user_management_page.dart'; // Add this import
 
 class MyHomePage extends StatefulWidget {
@@ -85,11 +85,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        backgroundColor: const Color(0xFF00FF7F),
+        title: Text(widget.title,
+            style: const TextStyle(color: Color(0xFF1E1E1E)),),
         actions: [
           Text('Role: ${userRole.toString().split('.').last}'),
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: const Icon(Icons.exit_to_app),
             onPressed: () => _handleLogout(context),
           ),
         ],
