@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mad_demo/model/models.dart';
 import 'package:provider/provider.dart';
-import '../model/user_provider.dart';
+import '../controller/user_provider.dart';
 import 'sign_up.dart';
 
 class LoginPage extends StatefulWidget {

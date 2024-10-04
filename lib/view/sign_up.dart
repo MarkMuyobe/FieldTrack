@@ -6,7 +6,7 @@ import '../model/input_decoration.dart';
 import '../stylers/gradient_text.dart';
 import 'login_page.dart';
 import 'package:provider/provider.dart';
-import '../model/user_provider.dart';
+import '../controller/user_provider.dart';
 import '../model/user.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -123,21 +123,28 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(height: 32.0), // Add space after title
 
               TextFormField(
+                textCapitalization: TextCapitalization.sentences,
+                keyboardType: TextInputType.name,
                 controller: _controllerFirstName,
                 decoration: inputDecoration('First Name', const Icon(Icons.person)),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
+                textCapitalization: TextCapitalization.sentences,
+                keyboardType: TextInputType.name,
                 controller: _controllerSurname,
                 decoration: inputDecoration('Surname', const Icon(Icons.person)),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
+                keyboardType: TextInputType.emailAddress,
                 controller: _controllerEmail,
                 decoration: inputDecoration('Email', const Icon(Icons.email)),
               ),
               const SizedBox(height: 16.0),
               TextFormField(
+                keyboardType: TextInputType.phone
+                ,
                 controller: _controllerPhone,
                 decoration: inputDecoration('Phone', const Icon(Icons.phone)),
               ),

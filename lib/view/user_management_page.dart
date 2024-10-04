@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../model/user.dart';
-import '../model/user_provider.dart';
+import '../controller/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class UserManagementPage extends StatefulWidget {

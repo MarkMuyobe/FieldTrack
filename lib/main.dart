@@ -7,7 +7,7 @@ import 'view/sign_up.dart';
 import 'model/mad_theme.dart';
 import 'view/greeting.dart';
 import 'package:provider/provider.dart';
-import 'model/user_provider.dart';
+import 'controller/user_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
